@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/nomlix/static/js/main.bb6b272d.js",
+    "index.html": "/nomlix/index.html",
+    "main.bb6b272d.js.map": "/nomlix/static/js/main.bb6b272d.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.bb6b272d.js"
+  ]
+}
