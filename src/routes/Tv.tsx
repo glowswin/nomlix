@@ -229,13 +229,13 @@ function Tv() {
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  const onBoxClicked = (tvId: number) => {
+  const onBoxClicked = (tvId: string) => {
     history.push(`/tv/${tvId}`);
   };
   const onOverlayClick = () => history.push("/tv");
   const clickedTv =
     bigTvMatch?.params.tvId &&
-    bigData.find((tv) => tv?.id === +bigTvMatch.params.tvId);
+    bigData.find((tv) => tv?.id === +bigTvMatch.params.tvId.split("_")[1]);
   return (
     <Wrapper>
       {isLoading &&
@@ -267,12 +267,12 @@ function Tv() {
                   .slice(offset * kind.index1, offset * kind.index1 + offset)
                   .map((tv) => (
                     <Box
-                      layoutId={tv.id + ""}
+                      layoutId={"1_" + tv.id}
                       key={tv.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
-                      onClick={() => onBoxClicked(tv.id)}
+                      onClick={() => onBoxClicked("1_" + tv.id)}
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(tv.backdrop_path, "w500")}
                     >
@@ -298,12 +298,12 @@ function Tv() {
                   .slice(offset * kind.index2, offset * kind.index2 + offset)
                   .map((tv) => (
                     <Box
-                      layoutId={tv.id + ""}
+                      layoutId={"2_" + tv.id}
                       key={tv.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
-                      onClick={() => onBoxClicked(tv.id)}
+                      onClick={() => onBoxClicked("2_" + tv.id)}
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(tv.backdrop_path, "w500")}
                     >
@@ -329,12 +329,12 @@ function Tv() {
                   .slice(offset * kind.index3, offset * kind.index3 + offset)
                   .map((tv) => (
                     <Box
-                      layoutId={tv.id + ""}
+                      layoutId={"3_" + tv.id}
                       key={tv.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
-                      onClick={() => onBoxClicked(tv.id)}
+                      onClick={() => onBoxClicked("3_" + tv.id)}
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(tv.backdrop_path, "w500")}
                     >
@@ -360,12 +360,12 @@ function Tv() {
                   .slice(offset * kind.index4, offset * kind.index4 + offset)
                   .map((tv) => (
                     <Box
-                      layoutId={tv.id + ""}
+                      layoutId={"4_" + tv.id}
                       key={tv.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
-                      onClick={() => onBoxClicked(tv.id)}
+                      onClick={() => onBoxClicked("4_" + tv.id)}
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(tv.backdrop_path, "w500")}
                     >

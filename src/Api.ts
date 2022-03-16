@@ -69,3 +69,14 @@ export function getTopLateTvs() {
     (response) => response.json()
   );
 }
+
+export function getSearchMovies(searchKey: string | undefined) {
+  return fetch(
+    `${BASE_PATH}/search/movie?api_key=${API_KEY}&query=${searchKey}`
+  ).then((response) => response.json());
+}
+export function getSearchTvs(searchKey: string | undefined) {
+  return fetch(
+    `${BASE_PATH}/search/tv?api_key=${API_KEY}&query=${searchKey}`
+  ).then((response) => response.json());
+}

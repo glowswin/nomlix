@@ -56,7 +56,12 @@ const Row = styled(motion.div)`
   position: absolute;
   width: 100%;
 `;
-
+const Layer = styled.div`
+  width: 50px;
+  height: 200px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.3);
+`;
 const Box = styled(motion.div)<{ bgphoto: string }>`
   background-color: white;
   background-image: url(${(props) => props.bgphoto});
@@ -129,7 +134,7 @@ const BigOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
 `;
 
-const rowVariants = {
+const rowVariants = (isLeft: boolean) => ({
   hidden: {
     x: window.outerWidth + 5,
   },
@@ -139,7 +144,7 @@ const rowVariants = {
   exit: {
     x: -window.outerWidth - 5,
   },
-};
+});
 
 const boxVariants = {
   normal: {
@@ -194,7 +199,11 @@ function Home() {
     index3: 0,
   });
   const [leaving, setLeaving] = useState(false);
-  const incraseIndex = (ii: number, data: IGetMoviesResult | null) => {
+  const incraseIndex = (
+    ii: number,
+    data: IGetMoviesResult | null,
+    isLeft: boolean
+  ) => {
     if (data) {
       if (leaving) return;
       toggleLeaving();
@@ -204,12 +213,22 @@ function Home() {
         let ind1 = prev.index1;
         let ind2 = prev.index2;
         let ind3 = prev.index3;
-        if (ii === 1) {
-          ind1 = ind1 === maxIndex ? 0 : ind1 + 1;
-        } else if (ii === 2) {
-          ind2 = ind2 === maxIndex ? 0 : ind2 + 1;
-        } else if (ii === 3) {
-          ind3 = ind3 === maxIndex ? 0 : ind3 + 1;
+        if (isLeft) {
+          if (ii === 1) {
+            ind1 = ind1 === maxIndex ? 0 : ind1 + 1;
+          } else if (ii === 2) {
+            ind2 = ind2 === maxIndex ? 0 : ind2 + 1;
+          } else if (ii === 3) {
+            ind3 = ind3 === maxIndex ? 0 : ind3 + 1;
+          }
+        } else {
+          if (ii === 1) {
+            ind1 = ind1 === 0 ? maxIndex : ind1 - 1;
+          } else if (ii === 2) {
+            ind2 = ind2 === 0 ? maxIndex : ind2 - 1;
+          } else if (ii === 3) {
+            ind3 = ind3 === 0 ? maxIndex : ind3 - 1;
+          }
         }
         return {
           index1: ind1,
@@ -220,23 +239,22 @@ function Home() {
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  const onBoxClicked = (movieId: number) => {
+  const onBoxClicked = (movieId: string) => {
     history.push(`/movies/${movieId}`);
   };
   const onOverlayClick = () => history.push("/");
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
-    bigData.find((movie) => movie?.id === +bigMovieMatch.params.movieId);
+    bigData.find(
+      (movie) => movie?.id === +bigMovieMatch.params.movieId.split("_")[1]
+    );
   return (
     <Wrapper>
       {isLoading && topIsLoading && upDataIsLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner
-            onClick={() => incraseIndex(1, data || null)}
-            bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
-          >
+          <Banner bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}>
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
@@ -250,17 +268,21 @@ function Home() {
                 transition={{ type: "tween", duration: 1 }}
                 key={kind.index1}
               >
+                <Layer
+                  style={{ position: "absolute", left: 0, top: 0 }}
+                  onClick={() => incraseIndex(1, data || null, true)}
+                ></Layer>
                 {data?.results
                   .slice(1)
                   .slice(offset * kind.index1, offset * kind.index1 + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={movie.id + ""}
+                      layoutId={"1_" + movie.id}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
-                      onClick={() => onBoxClicked(movie.id)}
+                      onClick={() => onBoxClicked("1_" + movie.id)}
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
@@ -269,6 +291,10 @@ function Home() {
                       </Info>
                     </Box>
                   ))}
+                <Layer
+                  style={{ position: "absolute", right: 0, top: 0 }}
+                  onClick={() => incraseIndex(1, data || null, false)}
+                ></Layer>
               </Row>
             </AnimatePresence>
           </Slider>
@@ -282,16 +308,20 @@ function Home() {
                 transition={{ type: "tween", duration: 1 }}
                 key={kind.index2}
               >
+                <Layer
+                  style={{ position: "absolute", left: 0, top: 0 }}
+                  onClick={() => incraseIndex(2, topData || null, true)}
+                ></Layer>
                 {topData?.results
                   .slice(offset * kind.index2, offset * kind.index2 + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={movie.id + ""}
+                      layoutId={"2_" + movie.id}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
-                      onClick={() => onBoxClicked(movie.id)}
+                      onClick={() => onBoxClicked("2_" + movie.id)}
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
@@ -300,6 +330,10 @@ function Home() {
                       </Info>
                     </Box>
                   ))}
+                <Layer
+                  style={{ position: "absolute", right: 0, top: 0 }}
+                  onClick={() => incraseIndex(2, topData || null, false)}
+                ></Layer>
               </Row>
             </AnimatePresence>
           </Slider>
@@ -313,16 +347,20 @@ function Home() {
                 transition={{ type: "tween", duration: 1 }}
                 key={kind.index2}
               >
+                <Layer
+                  style={{ position: "absolute", left: 0, top: 0 }}
+                  onClick={() => incraseIndex(3, upData || null, true)}
+                ></Layer>
                 {upData?.results
                   .slice(offset * kind.index3, offset * kind.index3 + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={movie.id + ""}
+                      layoutId={"3_" + movie.id}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
-                      onClick={() => onBoxClicked(movie.id)}
+                      onClick={() => onBoxClicked("3_" + movie.id)}
                       transition={{ type: "tween" }}
                       bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
@@ -331,6 +369,10 @@ function Home() {
                       </Info>
                     </Box>
                   ))}
+                <Layer
+                  style={{ position: "absolute", right: 0, top: 0 }}
+                  onClick={() => incraseIndex(3, upData || null, false)}
+                ></Layer>
               </Row>
             </AnimatePresence>
           </Slider>

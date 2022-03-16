@@ -15,7 +15,7 @@ function Router() {
         <Route path="/movie">
           <Movie />
         </Route>
-        <Route path="/search">
+        <Route path="/search/:searchStr">
           <Search />
         </Route>
         <Route path="/">
