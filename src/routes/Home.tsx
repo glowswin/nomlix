@@ -134,7 +134,7 @@ const BigOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
 `;
 
-const rowVariants = (isLeft: boolean) => ({
+const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
   },
@@ -144,7 +144,7 @@ const rowVariants = (isLeft: boolean) => ({
   exit: {
     x: -window.outerWidth - 5,
   },
-});
+};
 
 const boxVariants = {
   normal: {
