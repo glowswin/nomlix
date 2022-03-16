@@ -135,15 +135,15 @@ const BigOverview = styled.p`
 `;
 
 const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 5,
-  },
+  hidden: (gleft: boolean) => ({
+    x: gleft ? window.outerWidth + 5 : -window.outerHeight - 5,
+  }),
   visible: {
     x: 0,
   },
-  exit: {
-    x: -window.outerWidth - 5,
-  },
+  exit: (gleft: boolean) => ({
+    x: gleft ? -window.outerWidth - 5 : window.outerWidth + 5,
+  }),
 };
 
 const boxVariants = {
@@ -198,12 +198,14 @@ function Home() {
     index2: 0,
     index3: 0,
   });
+  const [gleft, setGleft] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const incraseIndex = (
     ii: number,
     data: IGetMoviesResult | null,
     isLeft: boolean
   ) => {
+    setGleft(isLeft);
     if (data) {
       if (leaving) return;
       toggleLeaving();
@@ -261,11 +263,12 @@ function Home() {
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
+                custom={gleft}
                 variants={rowVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                transition={{ type: "tween", duration: 1 }}
+                transition={{ type: "tween", duration: 1, delay: 1 }}
                 key={kind.index1}
               >
                 <Layer
@@ -301,11 +304,12 @@ function Home() {
           <Slider style={{ marginTop: "300px" }}>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
+                custom={gleft}
                 variants={rowVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                transition={{ type: "tween", duration: 1 }}
+                transition={{ type: "tween", duration: 1, delay: 1 }}
                 key={kind.index2}
               >
                 <Layer
@@ -340,12 +344,13 @@ function Home() {
           <Slider style={{ marginTop: "600px" }}>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
+                custom={gleft}
                 variants={rowVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                transition={{ type: "tween", duration: 1 }}
-                key={kind.index2}
+                transition={{ type: "tween", duration: 1, delay: 1 }}
+                key={kind.index3}
               >
                 <Layer
                   style={{ position: "absolute", left: 0, top: 0 }}
@@ -399,7 +404,12 @@ function Home() {
                         }}
                       />
                       <BigTitle>{clickedMovie.title}</BigTitle>
-                      <BigOverview>{clickedMovie.overview}</BigOverview>
+                      <BigOverview>
+                        {clickedMovie.overview}
+                        <br />
+                        릴리즈날짜:{clickedMovie.release_date},평점:
+                        {clickedMovie.vote_average}
+                      </BigOverview>
                     </>
                   )}
                 </BigMovie>
